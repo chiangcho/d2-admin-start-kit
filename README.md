@@ -50,8 +50,10 @@ created () {
 ##### prettier
 先引入内核及插件
 ```js
-const prettier = require('prettier/standalone')
-const plugins = [require('prettier/parser-flow')]
+import prettier from 'prettier/standalone'
+import parserflow from 'prettier/parser-flow'
+import "babel-polyfill"
+const plugins = [parserflow]
 ```
 执行格式化
 ```js
@@ -60,7 +62,7 @@ this.code = prettier.format(this.code, { parser: 'flow', plugins })
 ##### js-beautify
 1. 先引入
 ```js
-var beautify = require('js-beautify')
+import beautify from 'js-beautify'
 ```
 2. 执行格式化
 ```js
@@ -81,13 +83,13 @@ hljs.registerLanguage('javascript', javascript)
 3. 需要高亮的代码需要指定`<pre><code></code></pre>`
 ```html
     <pre>
-      <code class="javascript" ref="code">
-        {{code}}
+      <code ref="code">        
       </code>
     </pre>
 ```    
 4. 执行高亮
 ```js
+this.$refs.code.innerHTML = this.code
 hljs.highlightBlock(this.$refs.code)
 ```
 
@@ -114,4 +116,23 @@ http://localhost:3000/hello.vue
 ```
 则实际访问的是`./public/hello.vue`
 
-### 
+### 问题
+* 对象不支持“startsWith”属性或方法
+
+如果引入`prettier`，则会报该错误，该方法时es6规范中的，可以使用`babel-polyfill`
+```
+npm install --save-dev babel-polyfill
+```
+三种引入方式,前两种在需要的页面引入，第三种在webpack中配置
+```js
+require("babel-polyfill")
+
+import "babel-polyfill"
+
+module.exports = {
+
+　　entry: ["babel-polyfill", "./app/js"]
+
+}
+```
+
