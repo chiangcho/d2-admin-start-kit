@@ -1159,7 +1159,6 @@
      * @argument {Object} styles - Object with a list of properties and values which will be applied to the element
      */
     function setStyle(element, styles) {
-        console.log(JSON.stringify(styles))
         function is_numeric(n) {
             return (n !== '' && !isNaN(parseFloat(n)) && isFinite(n));
         }
