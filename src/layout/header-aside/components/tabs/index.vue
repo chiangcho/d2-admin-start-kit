@@ -20,7 +20,7 @@
           <el-tab-pane
             v-for="page in opened"
             :key="page.fullPath"
-            :label="page.params.title || (page.meta ? page.meta.title:null) || '未命 名'"
+            :label="(page.params?page.params.title:null) || (page.meta ? page.meta.title:null) || '未命 名'"
             :name="page.fullPath"
           />
         </el-tabs>
