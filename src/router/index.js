@@ -66,5 +66,40 @@ router.afterEach(to => {
   // 更改标题
   util.title(to.meta.title)
 })
+// 根据state中opened数据，将不在列表中的页面从vue的缓存中删除
+function removeCache (vm) {
+  var openedPages = vm.$store.state.d2admin.page.opened
+  if (
+    openedPages &&
+    vm.$vnode.parent &&
+    vm.$vnode.parent.componentInstance &&
+    vm.$vnode.parent.componentInstance.cache
+  ) {
+    var caches = vm.$vnode.parent.componentInstance.cache
+    var keys = vm.$vnode.parent.componentInstance.keys
+    keys.forEach((key, keyIndex) => {
+      const pageIndex = openedPages.findIndex(
+        page => key.indexOf(page.fullPath) >= 0
+      )
+      if (pageIndex < 0) {
+        keys.splice(keyIndex, 1)
+        caches[key].componentInstance.$destroy()
+        delete caches[key]
+      }
+    })
+  }
+}
 
+// 在路由进入和更新时进行打开页面的检查，缓存了但是未在打开列表的则从缓存中移除
+Vue.mixin({
+  beforeRouteUpdate: function (to, from, next) {
+    removeCache(this)
+    next()
+  },
+  beforeRouteEnter: function (to, from, next) {
+    next(vm => {
+      removeCache(vm)
+    })
+  }
+})
 export default router
