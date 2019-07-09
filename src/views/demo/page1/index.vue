@@ -155,7 +155,11 @@ export default {
     },
     openPage2: function (event) {
       this.$router.push({
-        path: 'page2/abc'
+        name: 'demo-page2',
+        params: {
+          title: '页面2-abc',
+          id: 'abc'
+        }
       })
     },
     openPage3: function (event) {

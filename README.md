@@ -13,6 +13,15 @@
 ### 动态指定页签标题
 
 修改了`tabs/index.vue`文件,使用方式是在路由跳转时，params中指定title属性
+```js
+this.$router.push({
+        name: 'demo-page2',
+        params: {
+          title: '页面2-abc',
+          id: 'abc'
+        }
+      })
+```      
 
 ### 动态加载vue组件
 使用了`http-vue-loader` https://github.com/FranckFreiburger/http-vue-loader
