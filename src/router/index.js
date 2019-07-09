@@ -1,16 +1,16 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 
 // 进度条
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
-import store from '@/store/index'
+import store from '@/store/index';
 
-import util from '@/libs/util.js'
+import util from '@/libs/util.js';
 
 // 路由数据
-import routes from './routes'
+import routes from './routes';
 
 Vue.use(VueRouter)
 
@@ -57,7 +57,12 @@ router.afterEach(to => {
   // 进度条
   NProgress.done()
   // 多页控制 打开新的页面
-  store.dispatch('d2admin/page/open', to)
+  if (to.params.replace && to.params.replace === 'true') {
+    delete to.params.replace
+    store.dispatch('d2admin/page/replace', to)
+  } else {
+    store.dispatch('d2admin/page/open', to)
+  }
   // 更改标题
   util.title(to.meta.title)
 })

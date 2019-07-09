@@ -1,6 +1,6 @@
-import { get } from 'lodash'
-import router from '@/router'
-import setting from '@/setting.js'
+import { get } from 'lodash';
+import router from '@/router';
+import setting from '@/setting.js';
 
 // 判定是否需要缓存
 const isKeepAlive = data => get(data, 'meta.cache', false)
@@ -26,32 +26,38 @@ export default {
     openedLoad ({ state, commit, dispatch }) {
       return new Promise(async resolve => {
         // store 赋值
-        const value = await dispatch('d2admin/db/get', {
-          dbName: 'sys',
-          path: 'page.opened',
-          defaultValue: setting.page.opened,
-          user: true
-        }, { root: true })
+        const value = await dispatch(
+          'd2admin/db/get',
+          {
+            dbName: 'sys',
+            path: 'page.opened',
+            defaultValue: setting.page.opened,
+            user: true
+          },
+          { root: true }
+        )
         // 在处理函数中进行数据优化 过滤掉现在已经失效的页签或者已经改变了信息的页签
         // 以 fullPath 字段为准
         // 如果页面过多的话可能需要优化算法
         // valid 有效列表 1, 1, 0, 1 => 有效, 有效, 失效, 有效
         const valid = []
         // 处理数据
-        state.opened = value.map(opened => {
-          // 忽略首页
-          if (opened.fullPath === '/index') {
-            valid.push(1)
-            return opened
-          }
-          // 尝试在所有的支持多标签页的页面里找到 name 匹配的页面
-          const find = state.pool.find(item => item.name === opened.name)
-          // 记录有效或无效信息
-          valid.push(find ? 1 : 0)
-          // 返回合并后的数据 新的覆盖旧的
-          // 新的数据中一般不会携带 params 和 query, 所以旧的参数会留存
-          return Object.assign({}, opened, find)
-        }).filter((opened, index) => valid[index] === 1)
+        state.opened = value
+          .map(opened => {
+            // 忽略首页
+            if (opened.fullPath === '/index') {
+              valid.push(1)
+              return opened
+            }
+            // 尝试在所有的支持多标签页的页面里找到 name 匹配的页面
+            const find = state.pool.find(item => item.name === opened.name)
+            // 记录有效或无效信息
+            valid.push(find ? 1 : 0)
+            // 返回合并后的数据 新的覆盖旧的
+            // 新的数据中一般不会携带 params 和 query, 所以旧的参数会留存
+            return Object.assign({}, opened, find)
+          })
+          .filter((opened, index) => valid[index] === 1)
         // 根据 opened 数据生成缓存设置
         commit('keepAliveRefresh')
         // end
@@ -65,12 +71,16 @@ export default {
     opend2db ({ state, dispatch }) {
       return new Promise(async resolve => {
         // 设置数据
-        dispatch('d2admin/db/set', {
-          dbName: 'sys',
-          path: 'page.opened',
-          value: state.opened,
-          user: true
-        }, { root: true })
+        dispatch(
+          'd2admin/db/set',
+          {
+            dbName: 'sys',
+            path: 'page.opened',
+            value: state.opened,
+            user: true
+          },
+          { root: true }
+        )
         // end
         resolve()
       })
@@ -79,15 +89,21 @@ export default {
      * @class opened
      * @description 更新页面列表上的某一项
      * @param {Object} state vuex state
-     * @param {Object} param { index, params, query, fullPath } 路由信息
+     * @param {Object} param { index, params, query, fullPath, name, meta,path } 路由信息
      */
-    openedUpdate ({ state, commit, dispatch }, { index, params, query, fullPath }) {
+    openedUpdate (
+      { state, commit, dispatch },
+      { index, params, query, fullPath, name, meta, path }
+    ) {
       return new Promise(async resolve => {
         // 更新页面列表某一项
         let page = state.opened[index]
         page.params = params || page.params
         page.query = query || page.query
         page.fullPath = fullPath || page.fullPath
+        page.name = name || page.name
+        page.meta = meta || page.meta
+        page.path = path || page.path
         state.opened.splice(index, 1, page)
         // 持久化
         await dispatch('opend2db')
@@ -120,6 +136,45 @@ export default {
         resolve()
       })
     },
+
+    /**
+     * @class current
+     * @description 打开一个新的页面
+     * @param {Object} state vuex state
+     * @param {Object} param 从路由钩子的 to 对象上获取 { name, params, query, fullPath } 路由信息
+     */
+    replace (
+      { state, commit, dispatch },
+      { name, params, query, fullPath, meta, path }
+    ) {
+      return new Promise(async resolve => {
+        // 已经打开的页面
+        let opened = state.opened
+        const currentIndex = opened.findIndex((page, index) => {
+          return page.fullPath === state.current
+        })
+        // 清理原来的缓存
+        commit('keepAliveRemove', opened[currentIndex].name)
+        // 增加新的缓存
+        if (isKeepAlive({ meta: meta })) {
+          commit('keepAlivePush', name)
+        }
+        // 页面以前打开过
+        await dispatch('openedUpdate', {
+          index: currentIndex,
+          params,
+          query,
+          fullPath,
+          name,
+          meta,
+          path
+        })
+
+        commit('currentSet', fullPath)
+        resolve()
+      })
+    },
+
     /**
      * @class current
      * @description 打开一个新的页面
@@ -230,7 +285,9 @@ export default {
         })
         if (currentIndex > 0) {
           // 删除打开的页面 并在缓存设置中删除
-          state.opened.splice(1, currentIndex - 1).forEach(({ name }) => commit('keepAliveRemove', name))
+          state.opened
+            .splice(1, currentIndex - 1)
+            .forEach(({ name }) => commit('keepAliveRemove', name))
         }
         state.current = pageAim
         if (router.app.$route.fullPath !== pageAim) {
@@ -258,7 +315,9 @@ export default {
           }
         })
         // 删除打开的页面 并在缓存设置中删除
-        state.opened.splice(currentIndex + 1).forEach(({ name }) => commit('keepAliveRemove', name))
+        state.opened
+          .splice(currentIndex + 1)
+          .forEach(({ name }) => commit('keepAliveRemove', name))
         // 设置当前的页面
         state.current = pageAim
         if (router.app.$route.fullPath !== pageAim) {
@@ -287,10 +346,16 @@ export default {
         })
         // 删除打开的页面数据 并更新缓存设置
         if (currentIndex === 0) {
-          state.opened.splice(1).forEach(({ name }) => commit('keepAliveRemove', name))
+          state.opened
+            .splice(1)
+            .forEach(({ name }) => commit('keepAliveRemove', name))
         } else {
-          state.opened.splice(currentIndex + 1).forEach(({ name }) => commit('keepAliveRemove', name))
-          state.opened.splice(1, currentIndex - 1).forEach(({ name }) => commit('keepAliveRemove', name))
+          state.opened
+            .splice(currentIndex + 1)
+            .forEach(({ name }) => commit('keepAliveRemove', name))
+          state.opened
+            .splice(1, currentIndex - 1)
+            .forEach(({ name }) => commit('keepAliveRemove', name))
         }
         // 设置新的页面
         state.current = pageAim
@@ -311,7 +376,9 @@ export default {
     closeAll ({ state, commit, dispatch }) {
       return new Promise(async resolve => {
         // 删除打开的页面 并在缓存设置中删除
-        state.opened.splice(1).forEach(({ name }) => commit('keepAliveRemove', name))
+        state.opened
+          .splice(1)
+          .forEach(({ name }) => commit('keepAliveRemove', name))
         // 持久化
         await dispatch('opend2db')
         // 关闭所有的标签页后需要判断一次现在是不是在首页
@@ -332,7 +399,9 @@ export default {
      * @param {Object} state vuex state
      */
     keepAliveRefresh (state) {
-      state.keepAlive = state.opened.filter(item => isKeepAlive(item)).map(e => e.name)
+      state.keepAlive = state.opened
+        .filter(item => isKeepAlive(item))
+        .map(e => e.name)
     },
     /**
      * @description 删除一个页面的缓存设置
@@ -340,7 +409,7 @@ export default {
      * @param {String} name name
      */
     keepAliveRemove (state, name) {
-      const list = [ ...state.keepAlive ]
+      const list = [...state.keepAlive]
       const index = list.findIndex(item => item === name)
 
       if (index !== -1) {
@@ -354,7 +423,7 @@ export default {
      * @param {String} name name
      */
     keepAlivePush (state, name) {
-      const keep = [ ...state.keepAlive ]
+      const keep = [...state.keepAlive]
       keep.push(name)
       state.keepAlive = keep
     },
@@ -393,7 +462,7 @@ export default {
             }
           }
         })
-      }
+      };
       push(routes)
       state.pool = pool
     }
