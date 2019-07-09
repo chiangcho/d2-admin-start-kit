@@ -31,10 +31,11 @@
 import hljs from 'highlight.js/lib/highlight'
 import javascript from 'highlight.js/lib/languages/javascript'
 import 'highlight.js/styles/solarized-light.css'
-// import abc from './hello.vue'
-const prettier = require('prettier/standalone')
-const plugins = [require('prettier/parser-flow')]
-var beautify = require('js-beautify')
+
+import prettier from 'prettier/standalone'
+import parserflow from 'prettier/parser-flow'
+import beautify from 'js-beautify'
+const plugins = [parserflow]
 
 export default {
   name: 'demo-page1',
