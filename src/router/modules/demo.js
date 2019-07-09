@@ -3,7 +3,7 @@ import layoutHeaderAside from '@/layout/header-aside';
 const meta = { auth: true }
 
 export default {
-  path: '/demo',
+  path: '/',
   name: 'demo',
   meta,
   redirect: { name: 'demo-page1' },
