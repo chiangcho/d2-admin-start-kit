@@ -126,7 +126,7 @@ export default {
   },
   created () {
     console.log('created')
-    this.$options.components['abc'] = httpVueLoader('http://localhost:3000/' + this.templateId + '.vue')
+    // this.$options.components['abc'] = httpVueLoader('http://localhost:3000/' + this.templateId + '.vue')
   },
   beforeDestroy () {
     console.log('before destroy')

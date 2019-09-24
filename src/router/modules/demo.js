@@ -1,4 +1,4 @@
-import layoutHeaderAside from '@/layout/header-aside';
+import layoutHeaderAside from '@/layout/header-aside'
 
 const meta = { auth: true }
 
@@ -37,6 +37,13 @@ export default {
           meta: { ...meta, title: '嵌套子路由page4', cache: true }
         }
       ]
+    },
+    {
+      path: 'split',
+      name: `${pre}split`,
+      component: () => import('@/views/demo/page1/split.vue'),
+
+      meta: { ...meta, title: '分栏布局', cache: true }
     }
   ])('demo-')
 }
