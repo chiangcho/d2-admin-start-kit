@@ -72,9 +72,20 @@
           <div slot="header" class="clearfix">
             <span>动态组件测试</span>
           </div>
-          <abc></abc>
+          <!-- <abc></abc> -->
         </el-card>
       </el-col>
+    </el-row>
+    <el-row :gutter="10">
+      <el-col :span="12">
+        <el-card>
+          <div slot="header" class="clearfix">
+            <span>事件测试</span>
+          </div>
+          <cv-eventWrapper @myclick="handleMyclick"></cv-eventWrapper>
+        </el-card>
+      </el-col>
+
     </el-row>
   </d2-container>
 </template>
@@ -87,12 +98,14 @@ import 'babel-polyfill'
 import prettier from 'prettier/standalone'
 import parserflow from 'prettier/parser-flow'
 import beautify from 'js-beautify'
+import cvEventWrapper from './eventWrapper.vue'
 const plugins = [parserflow]
 
 export default {
   name: 'demo-page1',
   components: {
     // abc: httpVueLoader('http://localhost:3000/' + 'hello.vue')
+    'cvEventWrapper': cvEventWrapper
   },
   data () {
     return {
@@ -172,6 +185,9 @@ export default {
         name: 'demo-page2',
         params: { replace: 'true', id: '567', title: '页面2567' }
       })
+    },
+    handleMyclick: function (event) {
+      alert(event)
     }
   }
 }
