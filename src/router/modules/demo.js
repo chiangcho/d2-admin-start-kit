@@ -51,6 +51,13 @@ export default {
       component: () => import('@/views/demo/page1/pdf.vue'),
 
       meta: { ...meta, title: 'pdf', cache: true }
+    },
+    {
+      path: 'charsetdetect',
+      name: `${pre}charsetdetect`,
+      component: () => import('@/views/demo/page1/charsetdetect.vue'),
+
+      meta: { ...meta, title: '自动判断编码', cache: true }
     }
   ])('demo-')
 }
