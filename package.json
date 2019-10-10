@@ -26,6 +26,7 @@
     "lowdb": "^1.0.0",
     "mockjs": "^1.0.1-beta3",
     "nprogress": "^0.2.0",
+    "pdfvuer": "^1.4.0",
     "qs": "^6.7.0",
     "screenfull": "^4.2.0",
     "splitpanes": "^1.14.5",

@@ -44,6 +44,13 @@ export default {
       component: () => import('@/views/demo/page1/split.vue'),
 
       meta: { ...meta, title: '分栏布局', cache: true }
+    },
+    {
+      path: 'pdf',
+      name: `${pre}pdf`,
+      component: () => import('@/views/demo/page1/pdf.vue'),
+
+      meta: { ...meta, title: 'pdf', cache: true }
     }
   ])('demo-')
 }
