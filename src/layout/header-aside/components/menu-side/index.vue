@@ -23,7 +23,7 @@ import { mapState } from 'vuex'
 import menuMixin from '../mixin/menu'
 import d2LayoutMainMenuItem from '../components/menu-item/index.vue'
 import d2LayoutMainMenuSub from '../components/menu-sub/index.vue'
-import BScroll from 'better-scroll'
+// import BScroll from 'better-scroll'
 export default {
   name: 'd2-layout-header-aside-menu-side',
   mixins: [
@@ -75,24 +75,24 @@ export default {
   },
   methods: {
     scrollInit () {
-      this.BS = new BScroll(this.$el, {
-        mouseWheel: true,
-        click: true
-        // 如果你愿意可以打开显示滚动条
-        // scrollbar: {
-        //   fade: true,
-        //   interactive: false
-        // }
-      })
+      // this.BS = new BScroll(this.$el, {
+      //   mouseWheel: true,
+      //   click: true
+      //   // 如果你愿意可以打开显示滚动条
+      //   // scrollbar: {
+      //   //   fade: true,
+      //   //   interactive: false
+      //   // }
+      // })
     },
     scrollDestroy () {
       // https://github.com/d2-projects/d2-admin/issues/75
-      try {
-        this.BS.destroy()
-      } catch (e) {
-        delete this.BS
-        this.BS = null
-      }
+      // try {
+      //   this.BS.destroy()
+      // } catch (e) {
+      //   delete this.BS
+      //   this.BS = null
+      // }
     }
   }
 }

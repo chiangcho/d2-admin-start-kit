@@ -9,7 +9,18 @@
     line-height: 36px;
   }
 }
+::-webkit-scrollbar {
+  width: 6px;          
+}
 
+::-webkit-scrollbar-thumb {   
+  border-radius: 6px;
+  background-color: hsla(220,4%,58%,.3);
+}
+
+::-webkit-scrollbar-track {     
+  opacity: 1;
+}
 // 整体框架结构
 .d2-layout-header-aside-group {
   height: 100%;
@@ -78,7 +89,8 @@
         position: relative;
         .d2-layout-header-aside-menu-side {
           @extend %full;
-          overflow: hidden;
+          overflow-x: hidden;
+          overflow-y: auto;
         }
       }
       .d2-theme-container-main {
