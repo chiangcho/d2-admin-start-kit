@@ -58,6 +58,20 @@ export default {
       component: () => import('@/views/demo/page1/charsetdetect.vue'),
 
       meta: { ...meta, title: '自动判断编码', cache: true }
+    },
+    {
+      path: 'richeditor',
+      name: `${pre}richeditor`,
+      component: () => import('@/views/demo/page1/testricheditor.vue'),
+
+      meta: { ...meta, title: '富文本', cache: true }
+    },
+    {
+      path: 'formtest',
+      name: `${pre}formtest`,
+      component: () => import('@/views/demo/page1/form.vue'),
+
+      meta: { ...meta, title: '表单', cache: true }
     }
   ])('demo-')
 }

@@ -10,7 +10,9 @@ export default [
       { path: '/page3', title: '页面 3' },
       { path: '/split', title: '分栏布局' },
       { path: '/pdf', title: 'pdf' },
-      { path: '/charsetdetect', title: '自动判断编码' }
+      { path: '/charsetdetect', title: '自动判断编码' },
+      { path: '/richeditor', title: '富文本' },
+      { path: '/formtest', title: '表单' }
     ]
   },
   {
