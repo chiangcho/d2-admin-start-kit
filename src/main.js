@@ -1,4 +1,6 @@
 // Vue
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 import Vue from 'vue'
 import App from './App'
 // 核心插件
@@ -41,5 +43,8 @@ new Vue({
     this.$store.commit('d2admin/ua/get')
     // 初始化全屏监听
     this.$store.dispatch('d2admin/fullscreen/listen')
+    let a = 'a1'
+    let b = 'b11'
+    let obj = { a, b }
   }
 }).$mount('#app')

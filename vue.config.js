@@ -1,15 +1,15 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const VueFilenameInjector = require('./tools/vue-filename-injector')
-
+const chalk = require('chalk')
 // 拼接路径
-const resolve = dir => require('path').join(__dirname, dir)
-
+const resolve = (dir) => require('path').join(__dirname, dir)
+var ProgressBarPlugin = require('progress-bar-webpack-plugin')
 // 增加环境变量
 process.env.VUE_APP_VERSION = require('./package.json').version
 process.env.VUE_APP_BUILD_TIME = require('dayjs')().format('YYYY-M-D HH:mm:ss')
 
 // 基础路径 注意发布之前要先修改这里
-let publicPath = '/';
+let publicPath = '/'
 
 module.exports = {
   publicPath, // 根据你的实际情况更改这里
@@ -26,8 +26,11 @@ module.exports = {
       }
     }
   },
+  transpileDependencies: [
+    'prettier'
+  ],
   // 默认设置: https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-service/lib/config/base.js
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     /**
      * 删除懒加载模块的 prefetch preload，降低带宽压力
      * https://cli.vuejs.org/zh/guide/html-and-static-assets.html#prefetch
@@ -42,7 +45,7 @@ module.exports = {
       .when(
         process.env.NODE_ENV === 'development',
         // sourcemap不包含列信息
-        config => config.devtool('cheap-source-map')
+        (config) => config.devtool('cheap-source-map')
       )
       // TRAVIS 构建 vue-loader 添加 filename
       .when(
@@ -53,7 +56,7 @@ module.exports = {
         })
       )
       // 非开发环境
-      .when(process.env.NODE_ENV !== 'development', config => {
+      .when(process.env.NODE_ENV !== 'development', (config) => {
         config.optimization.minimizer([
           new UglifyJsPlugin({
             uglifyOptions: {
@@ -100,5 +103,16 @@ module.exports = {
     if (process.env.VUE_APP_BUILD_MODE !== 'nomock') {
       entry.add('@/mock').end()
     }
+  },
+  configureWebpack: {
+    plugins: [
+      // new ProgressBarPlugin({
+      //   format:
+      //     '  build [:bar] ' +
+      //     chalk.green.bold(':percent') +
+      //     ' (:elapsed seconds)',
+      //   clear: false
+      // })
+    ]
   }
 }

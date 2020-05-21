@@ -94,12 +94,8 @@
 import hljs from 'highlight.js/lib/highlight'
 import javascript from 'highlight.js/lib/languages/javascript'
 import 'highlight.js/styles/solarized-light.css'
-import 'babel-polyfill'
-import prettier from 'prettier/standalone'
-import parserflow from 'prettier/parser-flow'
 import beautify from 'js-beautify'
 import cvEventWrapper from './eventWrapper.vue'
-const plugins = [parserflow]
 
 export default {
   name: 'demo-page1',
@@ -151,8 +147,6 @@ export default {
   },
   methods: {
     format1: function (event) {
-      this.code = prettier.format(this.code, { parser: 'flow', plugins })
-      this.$refs.code.innerHTML = this.code
     },
     format2: function (event) {
       this.code = beautify(this.code, { indent_size: 2, space_in_empty_paren: true })
