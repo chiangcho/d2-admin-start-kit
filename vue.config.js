@@ -26,9 +26,6 @@ module.exports = {
       }
     }
   },
-  transpileDependencies: [
-    'prettier'
-  ],
   // 默认设置: https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-service/lib/config/base.js
   chainWebpack: (config) => {
     /**
