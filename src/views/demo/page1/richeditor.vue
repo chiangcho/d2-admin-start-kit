@@ -6,6 +6,7 @@
 
 <script>
 import tinymce from 'tinymce/tinymce'
+import 'tinymce/icons/default/icons'
 import 'tinymce/themes/silver'
 import 'tinymce/plugins/image'
 // 插入上传图片插件
@@ -23,7 +24,8 @@ import 'tinymce/plugins/preview'
 // 预览插件
 import 'tinymce/plugins/paste'
 // 粘贴插件
-
+import 'tinymce-mention/mention/plugin.js'
+import 'tinymce-mention/css/autocomplete.css'
 import tinymceEditor from '@tinymce/tinymce-vue'
 
 export default {
@@ -44,7 +46,7 @@ export default {
     },
     plugins: {
       type: [String, Array],
-      default: 'lists image media table fullscreen print preview paste'
+      default: 'lists image media table fullscreen print preview paste advlink mention'
     },
     toolbar: {
       type: [String, Array],
@@ -78,6 +80,14 @@ export default {
         images_upload_handler: (blobInfo, success, failure) => {
           const img = 'data:image/jpeg;base64,' + blobInfo.base64()
           success(img)
+        },
+        mentions: {
+          source: [
+            { name: 'Tyra Porcelli' },
+            { name: 'Brigid Reddish' },
+            { name: '高中' },
+            { name: '中学' }
+          ]
         }
       },
       componentKey: 0
